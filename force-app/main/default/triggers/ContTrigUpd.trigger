@@ -1,14 +1,15 @@
-trigger ContTrigUpd on Contact (after update) {
-for (Contact con :trigger.new){
-Contact tempcont=Trigger.oldMap.get(con.ID);
-String oldemail=tempcont.email;
-    if(con.email!=oldeamil){
-    Messaging.SingleEmailMessage mail= new Messaging.SingleEmailMessage();
-    String [] toAddress =new String []{'gukagul@gmail.com'};
-    mail.setToAddresses(toAddress);
-    mail.setSubject ('Yout email was ass to new contact ');
-    mail.setPlainTextBody ('Dear admin, your email was assighned to this new contact');
-    Messaging.sendEmail(new Messaging.SingleEmailMessage[]{mail});
-}
-}
+trigger crCon on Contact (before update) {
+
+    for (Contact con:Trigger.new){
+        Contact oldContact=Trigger.OldMap.get(con.Id);//Storing older version into opportunity.
+        String oldEmail=oldContact.Email;
+        
+        if(con.email!=oldEmail){
+           Boolean result = Email.send(con.email, 'Trigger test: your email has been changed to '+con.email);
+           if (!result){
+                con.addError('Email not sent');
+           }
+        }
+
+    }
 }
